@@ -78,26 +78,27 @@ class Client {
   }
 }
 
-var PollButton = React.createClass({
 
-  getInitialState: function() {
-    return {
+class PollButton extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
       toggled: false
     };
-  },
+  }
 
-  _onPress: function() {
+  _onPress() {
     this.setState({
       toggled: !this.state.toggled
     });
+  }
 
-  },
-
-  render: function() {
+  render() {
     var buttonStyle = this.state.toggled ? styles.buttonPressed : styles.buttonNotPressed;
 
     return (
-      <TouchableHighlight onPress={this._onPress}>
+      <TouchableHighlight onPress={this._onPress.bind(this)}>
         <View style={buttonStyle}>
           <View style={styles.buttonContainer}>
             <Text style={styles.buttonText}>
@@ -107,8 +108,8 @@ var PollButton = React.createClass({
         </View>
       </TouchableHighlight>
     );
-  },
-});
+  }
+}
 
 var Poll = React.createClass({
   render: function() {
