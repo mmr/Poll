@@ -4,7 +4,7 @@
 'use strict';
 
 var React = require('react-native');
-var Button = require('react-native-button');
+var AwesomeButton = require('react-native-awesome-button');
 var {
   AppRegistry,
   MapView,
@@ -16,34 +16,26 @@ var {
 var styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 10,
   },
   map: {
-    height: 497,
+    height: 480,
+  },
+  mapContainer: {
+    marginTop: 20,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
+  },
+  button: {
+    flex: 1,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: 'black',
   },
-  mapContainer: {
-    margin: 5,
-    marginTop: 20,
-  },
-  wrapper: {
-    borderRadius: 5,
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: 'white'
-  },
-  pollButton: {
-    backgroundColor: 'blue',
-    padding: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cancelButton: {
-    backgroundColor: 'red',
-    padding: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+  buttonLabel: {
+    color: 'white',
   },
 });
 
@@ -122,9 +114,11 @@ class PollButton extends React.Component {
   constructor(props) {
     super(props);
     this.poller = new Poller();
+    this.poll = this.poll.bind(this);
+    this.cancel = this.cancel.bind(this);
     this.state = {
-      polling: false
-    }
+      buttonState: 'idle'
+    };
   }
 
   componentWillUnmount() {
@@ -132,27 +126,37 @@ class PollButton extends React.Component {
   }
 
   cancel() {
-    this.setState({polling: false});
+    this.setState({buttonState: 'idle'});
     this.poller.cancel();
   }
 
   poll() {
-    this.setState({polling: true});
+    this.setState({buttonState: 'polling'});
     this.poller.poll();
   }
 
   render() {
-    if (this.state.polling) {
-      var text = 'Polling...';
-      var style = styles.cancelButton;
-      var cb = this.cancel.bind(this);
-    } else {
-      var text = 'Poll';
-      var style = styles.pollButton;
-      var cb = this.poll.bind(this);
-    }
-
-    return <Button style={{borderWidth: 1}} onPress={cb}>{text}</Button>;
+    return (
+      <AwesomeButton
+        backgroundStyle={styles.button}
+        labelStyle={styles.buttonLabel}
+        transitionDuration={200}
+        states={{
+          idle: {
+            text: 'Poll',
+            backgroundColor: '#1155DD',
+            onPress: this.poll,
+          },
+          polling: {
+            text: 'Polling... (press to cancel)',
+            backgroundColor: '#002299',
+            spinner: true,
+            onPress: this.cancel,
+          },
+        }}
+        buttonState={this.state.buttonState}
+      />
+    );
   }
 }
 
