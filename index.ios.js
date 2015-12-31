@@ -18,19 +18,17 @@ var styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    height: 450,
+    height: 497,
     borderWidth: 1,
     borderColor: 'black',
   },
   mapContainer: {
-    height: 450,
     margin: 5,
     marginTop: 20,
-    backgroundColor: '#eaeaea',
   },
   buttonPressed: {
     flex: 1,
-    height: 60,
+    height: 40,
     backgroundColor: 'gray',
   },
   buttonNotPressed: {
