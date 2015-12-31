@@ -46,7 +46,40 @@ var styles = StyleSheet.create({
   },
 });
 
+class Client {
+  xhr: XMLHttpRequest;
+  downloading: boolean;
+
+  constructor() {
+    this.downloading = false;
+  }
+
+  post(url, payload, successCb, failureCb) {
+    this.xhr && this.xhr.abort();
+    var xhr = this.xhr || new XMLHttpRequest();
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState == xhr.DONE) {
+        this.downloading = false;
+
+        resp = xhr.responseText;
+        if (xhr.status === 200) {
+          successCb(resp);
+        } else {
+          failureCb(resp, xhr.status);
+        }
+      }
+    };
+
+    xhr.open('POST', url);
+    xhr.send(payload);
+    this.xhr = xhr;
+    this.downloading = true;
+  }
+}
+
 var PollButton = React.createClass({
+
   getInitialState: function() {
     return {
       toggled: false
@@ -57,6 +90,7 @@ var PollButton = React.createClass({
     this.setState({
       toggled: !this.state.toggled
     });
+
   },
 
   render: function() {
