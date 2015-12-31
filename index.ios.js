@@ -78,7 +78,6 @@ class Client {
   }
 }
 
-
 class PollButton extends React.Component {
 
   constructor(props) {
@@ -111,8 +110,8 @@ class PollButton extends React.Component {
   }
 }
 
-var Poll = React.createClass({
-  render: function() {
+class Poll extends React.Component {
+  render() {
     return (
       <View style={styles.container}>
         <View style={styles.mapContainer}>
@@ -122,6 +121,6 @@ var Poll = React.createClass({
       </View>
     );
   }
-});
+}
 
 AppRegistry.registerComponent('Poll', () => Poll);
