@@ -26,32 +26,35 @@ var styles = StyleSheet.create({
     margin: 5,
     marginTop: 20,
   },
-  buttonPressed: {
-    flex: 1,
-    height: 40,
-    backgroundColor: 'gray',
-  },
-  buttonNotPressed: {
-    flex: 1,
-    height: 40,
-    backgroundColor: 'gray',
-  },
-  buttonContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  wrapper: {
+    borderRadius: 5,
+    marginBottom: 5,
   },
   buttonText: {
     color: 'white'
+  },
+  pollButton: {
+    backgroundColor: 'blue',
+    padding: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButton: {
+    backgroundColor: 'red',
+    padding: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
 class Client {
   xhr: XMLHttpRequest;
   downloading: boolean;
+  cancelled: boolean;
 
   constructor() {
     this.downloading = false;
+    this.cancelled = false;
   }
 
   post(url, payload, successCb, failureCb) {
@@ -61,6 +64,11 @@ class Client {
     xhr.onreadystatechange = () => {
       if (xhr.readyState == xhr.DONE) {
         this.downloading = false;
+
+        if (this.cancelled) {
+          this.cancelled = false;
+          return;
+        }
 
         resp = xhr.responseText;
         if (xhr.status === 200) {
@@ -76,35 +84,81 @@ class Client {
     this.xhr = xhr;
     this.downloading = true;
   }
+
+  cancel() {
+    this.cancelled = true;
+    this.xhr && this.xhr.abort();
+  }
+}
+
+class Poller {
+  client: Client;
+  polling: boolean;
+  cancelled: boolean;
+
+  constructor() {
+    this.client = new Client();
+    this.polling = false;
+    this.cancelled = false;
+  }
+
+  poll() {
+    this.cancelled = false;
+    this.polling = true;
+    // TODO (mmr) ... post ...
+  }
+
+  cancel() {
+    this.polling = false;
+    this.cancelled = true;
+    this.client.cancel();
+    alert('Polling cancelled');
+  }
 }
 
 class PollButton extends React.Component {
+  poller: Poller;
 
   constructor(props) {
     super(props);
+    this.poller = new Poller();
     this.state = {
-      toggled: false
-    };
+      polling: false
+    }
   }
 
-  _onPress() {
-    this.setState({
-      toggled: !this.state.toggled
-    });
+  componentWillUnmount() {
+    this.poller.cancel();
+  }
+
+  cancel() {
+    this.setState({polling: false});
+    this.poller.cancel();
+  }
+
+  poll() {
+    this.setState({polling: true});
+    this.poller.poll();
   }
 
   render() {
-    var buttonStyle = this.state.toggled ? styles.buttonPressed : styles.buttonNotPressed;
+    if (this.state.polling) {
+      var text = 'Polling...';
+      var style = styles.cancelButton;
+      var cb = this.cancel.bind(this);
+    } else {
+      var text = 'Poll';
+      var style = styles.pollButton;
+      var cb = this.poll.bind(this);
+    }
 
     return (
-      <TouchableHighlight onPress={this._onPress.bind(this)}>
-        <View style={buttonStyle}>
-          <View style={styles.buttonContainer}>
-            <Text style={styles.buttonText}>
-              Poll
-            </Text>
+      <TouchableHighlight
+        style={styles.wrapper}
+        onPress={cb}>
+          <View style={style}>
+            <Text style={styles.buttonText}>{text}</Text>
           </View>
-        </View>
       </TouchableHighlight>
     );
   }
