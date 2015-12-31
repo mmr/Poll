@@ -4,12 +4,12 @@
 'use strict';
 
 var React = require('react-native');
+var Button = require('react-native-button');
 var {
   AppRegistry,
   MapView,
   StyleSheet,
   Text,
-  TouchableHighlight,
   View,
 } = React;
 
@@ -152,15 +152,7 @@ class PollButton extends React.Component {
       var cb = this.poll.bind(this);
     }
 
-    return (
-      <TouchableHighlight
-        style={styles.wrapper}
-        onPress={cb}>
-          <View style={style}>
-            <Text style={styles.buttonText}>{text}</Text>
-          </View>
-      </TouchableHighlight>
-    );
+    return <Button style={{borderWidth: 1}} onPress={cb}>{text}</Button>;
   }
 }
 
@@ -169,7 +161,7 @@ class Poll extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.mapContainer}>
-          <MapView style={styles.map} showsUserLocation={true} />
+          <MapView style={styles.map} showsUserLocation={false} />
         </View>
         <PollButton />
       </View>
