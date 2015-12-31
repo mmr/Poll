@@ -9,6 +9,7 @@ var {
   AppRegistry,
   MapView,
   StyleSheet,
+  Component,
   Text,
   View,
 } = React;
@@ -22,7 +23,7 @@ var styles = StyleSheet.create({
     height: 480,
   },
   mapContainer: {
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: 10,
     borderWidth: 1,
     borderColor: 'black',
@@ -108,7 +109,7 @@ class Poller {
   }
 }
 
-class PollButton extends React.Component {
+class PollButton extends Component {
   poller: Poller;
 
   constructor(props) {
@@ -160,7 +161,7 @@ class PollButton extends React.Component {
   }
 }
 
-class Poll extends React.Component {
+class Poll extends Component {
   render() {
     return (
       <View style={styles.container}>
