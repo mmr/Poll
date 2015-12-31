@@ -621,6 +621,7 @@
 				INFOPLIST_FILE = Poll/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = org.b1n.Poll;
 				PRODUCT_NAME = Poll;
 			};
 			name = Debug;
@@ -638,6 +639,7 @@
 				INFOPLIST_FILE = Poll/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = org.b1n.Poll;
 				PRODUCT_NAME = Poll;
 			};
 			name = Release;
