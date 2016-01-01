@@ -3,7 +3,6 @@ import React, {Component} from 'react-native';
 import AwesomeButton from 'react-native-awesome-button';
 
 /* eslint-env browser */
-/* eslint react/sort-comp: 0 */
 /* eslint react/no-set-state: 0 */
 
 const styles = React.StyleSheet.create({
