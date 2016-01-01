@@ -1,34 +1,12 @@
-/**
- * @flow
- */
-'use strict';
+/* @flow */
+import React, {Component} from 'react-native';
+import AwesomeButton from 'react-native-awesome-button';
 
-var React = require('react-native');
-var AwesomeButton = require('react-native-awesome-button');
-var {
-  AppRegistry,
-  MapView,
-  StyleSheet,
-  Component,
-  Text,
-  View,
-} = React;
+/* eslint-env browser */
+/* eslint react/sort-comp: 0 */
+/* eslint react/no-set-state: 0 */
 
-var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 10,
-  },
-  map: {
-    height: 480,
-  },
-  mapContainer: {
-    marginTop: 15,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 5,
-  },
+const styles = React.StyleSheet.create({
   button: {
     flex: 1,
     borderRadius: 5,
@@ -50,9 +28,9 @@ class Client {
     this.cancelled = false;
   }
 
-  post(url, payload, successCb, failureCb) {
+  post(url: string, body: Object, successCb: Function, failureCb: Function) {
     this.xhr && this.xhr.abort();
-    var xhr = this.xhr || new XMLHttpRequest();
+    let xhr = this.xhr || new XMLHttpRequest();
 
     xhr.onreadystatechange = () => {
       if (xhr.readyState == xhr.DONE) {
@@ -63,7 +41,7 @@ class Client {
           return;
         }
 
-        resp = xhr.responseText;
+        const resp = xhr.responseText;
         if (xhr.status === 200) {
           successCb(resp);
         } else {
@@ -73,7 +51,7 @@ class Client {
     };
 
     xhr.open('POST', url);
-    xhr.send(payload);
+    xhr.send(body);
     this.xhr = xhr;
     this.downloading = true;
   }
@@ -105,7 +83,6 @@ class Poller {
     this.polling = false;
     this.cancelled = true;
     this.client.cancel();
-    alert('Polling cancelled');
   }
 }
 
@@ -118,7 +95,7 @@ class PollButton extends Component {
     this.poll = this.poll.bind(this);
     this.cancel = this.cancel.bind(this);
     this.state = {
-      buttonState: 'idle'
+      buttonState: 'idle',
     };
   }
 
@@ -138,40 +115,27 @@ class PollButton extends Component {
 
   render() {
     return (
-      <AwesomeButton
-        backgroundStyle={styles.button}
-        labelStyle={styles.buttonLabel}
-        transitionDuration={200}
-        states={{
-          idle: {
-            text: 'Poll',
-            backgroundColor: '#1155DD',
-            onPress: this.poll,
-          },
-          polling: {
-            text: 'Polling... (press to cancel)',
-            backgroundColor: '#002299',
-            spinner: true,
-            onPress: this.cancel,
-          },
-        }}
-        buttonState={this.state.buttonState}
-      />
-    );
+        <AwesomeButton
+            backgroundStyle={styles.button}
+            buttonState={this.state.buttonState}
+            labelStyle={styles.buttonLabel}
+            states={{
+              idle: {
+                text: 'Poll',
+                backgroundColor: '#1155DD',
+                onPress: this.poll,
+              },
+              polling: {
+                text: 'Polling... (press to cancel)',
+                backgroundColor: '#002299',
+                spinner: true,
+                onPress: this.cancel,
+              },
+            }}
+            transitionDuration={200}
+        />
+      );
   }
 }
 
-class Poll extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.mapContainer}>
-          <MapView style={styles.map} showsUserLocation={false} />
-        </View>
-        <PollButton />
-      </View>
-    );
-  }
-}
-
-AppRegistry.registerComponent('Poll', () => Poll);
+export default PollButton;
