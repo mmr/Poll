@@ -29,11 +29,13 @@ class Client {
   }
 
   post(url: string, body: Object, successCb: Function, failureCb: Function) {
-    this.xhr && this.xhr.abort();
+    if (this.xhr) {
+      this.xhr.abort();
+    }
     let xhr = this.xhr || new XMLHttpRequest();
 
     xhr.onreadystatechange = () => {
-      if (xhr.readyState == xhr.DONE) {
+      if (xhr.readyState === xhr.DONE) {
         this.downloading = false;
 
         if (this.cancelled) {
@@ -58,7 +60,9 @@ class Client {
 
   cancel() {
     this.cancelled = true;
-    this.xhr && this.xhr.abort();
+    if (this.xhr) {
+      this.xhr.abort();
+    }
   }
 }
 

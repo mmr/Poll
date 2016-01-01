@@ -1,4 +1,5 @@
 /* @flow */
+'use strict'
 import React, {Component} from 'react-native';
 import PollButton from './PollButton';
 
