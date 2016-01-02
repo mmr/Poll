@@ -92,8 +92,8 @@ class Poller {
 class PollButton extends Component {
   poller: Poller;
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.poller = new Poller();
     this.poll = this.poll.bind(this);
     this.cancel = this.cancel.bind(this);
