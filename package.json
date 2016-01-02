@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Poll for cars",
   "author": "Marcio Ribeiro <binary@b1n.org> (http://b1n.org)",
-  "license": "MIT",
+  "license": "ISC",
   "scripts": {
     "android-setup-port": "adb reverse tcp:8081 tcp:8080",
     "bundle": "rnws bundle",
