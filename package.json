@@ -4,6 +4,13 @@
   "description": "Poll for cars",
   "author": "Marcio Ribeiro <binary@b1n.org> (http://b1n.org)",
   "license": "ISC",
+  "keywords": [
+    "react-native",
+    "android",
+    "iphone",
+    "ios",
+    "uber"
+  ],
   "scripts": {
     "android-setup-port": "adb reverse tcp:8081 tcp:8080",
     "bundle": "rnws bundle",
