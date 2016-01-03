@@ -2,8 +2,26 @@
 
 # Poll
 
-No cars available?
+- No cars available?
+- Want to get notified when there are?
+- Poll is for you!
 
-Want to get notified when there are?
+## Implementation details
+Poll is a simple mobile app that polls the Uber API to check when there are cars
+available at your location. Poll will notify you when a car gets into range.
 
-Poll is for you!
+## How to install
+
+### iOS
+(...)
+
+### Android
+(...)
+
+## Technologies used:
+- [NPM](https://www.npmjs.com/)
+- [React Native](https://facebook.github.io/react-native/)
+- [JSX](https://facebook.github.io/jsx/)
+- [Babel](https://babeljs.io/)
+- [webpack](https://webpack.github.io/)
+- [Uber API](https://developer.uber.com/)
