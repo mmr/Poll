@@ -32,7 +32,7 @@ class App extends Component {
         <View style={styles.container}>
           <View style={styles.mapContainer}>
             <MapView
-                showsUserLocation={false}
+                showsUserLocation={true}
                 style={styles.map}
             />
           </View>
