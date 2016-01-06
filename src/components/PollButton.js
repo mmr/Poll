@@ -4,6 +4,7 @@ import AwesomeButton from 'react-native-awesome-button';
 
 /* eslint-env browser */
 /* eslint react/no-set-state: 0 */
+/* global URLSearchParams */
 
 const styles = React.StyleSheet.create({
   button: {
@@ -16,6 +17,8 @@ const styles = React.StyleSheet.create({
     color: 'white',
   },
 });
+
+const POLL_TIME_IN_MILLIS = 10000;
 
 class Client {
   xhr: XMLHttpRequest;
@@ -76,10 +79,34 @@ class Poller {
     this.cancelled = false;
   }
 
+  pollUber() {
+    const lat = -23.484957;
+    const lng = -46.864309;
+    const token = 'my_token';
+    let params = new URLSearchParams();
+    params.append('server_token', token);
+    params.append('start_latitude', lat);
+    params.append('start_longitude', lng);
+
+    let etaUrl = 'https://api.uber.com/v1/estimates/time?';
+    etaUrl += params;
+
+    fetch(etaUrl)
+      .then((resp) => resp.text())
+      // .then((body) => {
+      .then(() => {
+        setTimeout(self.pollUber, POLL_TIME_IN_MILLIS);
+      })
+      // .catch((err) => {
+      .catch(() => {
+        // ...
+      });
+  }
+
   poll() {
     this.cancelled = false;
     this.polling = true;
-    // TODO (mmr) ... post ...
+    self.pollUber();
   }
 
   cancel() {
