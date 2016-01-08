@@ -160,9 +160,15 @@ class PollButton extends Component {
     this.poller.cancel();
   }
 
+  notifyCarsFound(carsFound) {
+    /* eslint no-alert: 0 */
+    alert(carsFound);
+    this.setState({buttonState: 'idle'});
+  }
+
   poll() {
     this.setState({buttonState: 'polling'});
-    this.poller.poll((carsFound) => self.notifyCarsFound(carsFound));
+    this.poller.poll((carsFound) => this.notifyCarsFound(carsFound));
   }
 
   render() {
