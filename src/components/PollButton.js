@@ -17,7 +17,7 @@ const styles = React.StyleSheet.create({
   },
 });
 
-const POLL_TIME_IN_MILLIS = 10000;
+// const POLL_TIME_IN_MILLIS = 10000;
 const GPS_TIMEOUT_IN_MILLIS = 20000;
 const GPS_MAX_AGE_IN_MILLIS = 60000;
 
@@ -81,6 +81,7 @@ class Poller {
   }
 
   handleError(err) {
+    /* eslint no-alert: 0 */
     alert(err.message);
     this.cancel();
   }
@@ -94,7 +95,7 @@ class Poller {
     throw err;
   }
 
-  pollUber(position) {
+  pollUber(position, carsFoundCb) {
     const token = 'my_token';
     this.polling = false;
 
@@ -105,7 +106,7 @@ class Poller {
     fetch(etaUrl)
       .then((resp) => this.handleResp(resp))
       .then((body) => {
-        this.carsAvailable = true;
+        carsFoundCb(body);
         // setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
       })
       .catch((err) => {
@@ -113,12 +114,12 @@ class Poller {
       });
   }
 
-  poll() {
+  poll(carsFoundCb) {
     this.cancelled = false;
     this.polling = true;
 
     navigator.geolocation.getCurrentPosition(
-      (position) => this.pollUber(position),
+      (position) => this.pollUber(position, carsFoundCb),
       (error) => this.handleError(error),
       {
         enableHighAccuracy: true,
@@ -147,9 +148,12 @@ class PollButton extends Component {
     };
   }
 
+/*
+// XXX (mmr) : is this really needed?
   componentWillUnmount() {
     this.poller.cancel();
   }
+*/
 
   cancel() {
     this.setState({buttonState: 'idle'});
@@ -158,7 +162,7 @@ class PollButton extends Component {
 
   poll() {
     this.setState({buttonState: 'polling'});
-    this.poller.poll();
+    this.poller.poll((carsFound) => self.notifyCarsFound(carsFound));
   }
 
   render() {
