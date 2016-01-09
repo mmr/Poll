@@ -81,31 +81,33 @@ class Poller {
   }
 
   handleError(err) {
-    /* eslint no-alert: 0 */
-    alert(err.message);
+    /* eslint no-console: 0 */
+    console.log(err.message);
     this.cancel();
   }
 
   handleResp(resp) {
     if (resp.status >= 200 && resp.status <= 299) {
-      return resp.text();
+      return resp.json();
     }
     let err = new Error(resp.statusText);
     err.response = resp;
     throw err;
   }
 
-  pollUber(position, carsFoundCb) {
+  pollUber(position, carsFoundCb: Function) {
     const token = 'my_token';
     this.polling = false;
 
     let {latitude, longitude} = position.coords;
-    let params = `server_token=${token}&start_latitude=${latitude}&longitude=${longitude}`;
+    let params = `server_token=${token}&start_latitude=${latitude}&start_longitude=${longitude}`;
     let etaUrl = `https://api.uber.com/v1/estimates/time?${params}`;
+    console.log(`polling: ${etaUrl}`);
 
     fetch(etaUrl)
       .then((resp) => this.handleResp(resp))
       .then((body) => {
+        console.log(`body: ${body}`);
         carsFoundCb(body);
         // setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
       })
@@ -161,8 +163,8 @@ class PollButton extends Component {
   }
 
   notifyCarsFound(carsFound) {
-    /* eslint no-alert: 0 */
-    alert(carsFound);
+    /* eslint no-console: 0 */
+    console.log(carsFound);
     this.setState({buttonState: 'idle'});
   }
 
