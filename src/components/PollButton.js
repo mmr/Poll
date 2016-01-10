@@ -21,6 +21,9 @@ const styles = React.StyleSheet.create({
 const GPS_TIMEOUT_IN_MILLIS = 20000;
 const GPS_MAX_AGE_IN_MILLIS = 60000;
 
+// FIXME (mmr) : hardcoded prodcut (uberX) for now
+const PRODUCT_ID = 'd5ef01d9-7d54-413e-b265-425948d06e92';
+
 class Client {
   xhr: XMLHttpRequest;
   downloading: boolean;
@@ -69,6 +72,14 @@ class Client {
   }
 }
 
+class Car {
+  estimate: Number;
+
+  constructor(estimate: Number) {
+    this.estimate = estimate;
+  }
+}
+
 class Poller {
   client: Client;
   polling: boolean;
@@ -96,19 +107,27 @@ class Poller {
   }
 
   pollUber(position, carsFoundCb: Function) {
-    const token = 'my_token';
+    const token = 'De9IpR3cxQJ9pMrmhiIUqo_wmyA0mzQ3lBwapEL1';
     this.polling = false;
 
     let {latitude, longitude} = position.coords;
-    let params = `server_token=${token}&start_latitude=${latitude}&start_longitude=${longitude}`;
+    let params = `server_token=${token}`;
+    params += `&start_latitude=${latitude}`;
+    params += `&start_longitude=${longitude}`;
+    params += `&product_id=${PRODUCT_ID}`;
     let etaUrl = `https://api.uber.com/v1/estimates/time?${params}`;
     console.log(`polling: ${etaUrl}`);
 
     fetch(etaUrl)
       .then((resp) => this.handleResp(resp))
       .then((body) => {
-        console.log(`body: ${body}`);
-        carsFoundCb(body);
+        // XXX (mmr) : why cant we use for..of here?
+        // let cars = [for (t of body.times) new Car(t.etimate)];
+        let cars = [];
+        body.times.forEach((t) => {
+          cars.append(new Car(t.estimate));
+        });
+        carsFoundCb(cars);
         // setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
       })
       .catch((err) => {
