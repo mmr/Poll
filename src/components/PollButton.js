@@ -23,6 +23,8 @@ const GPS_MAX_AGE_IN_MILLIS = 60000;
 
 // FIXME (mmr) : hardcoded prodcut (uberX) for now
 const PRODUCT_ID = 'd5ef01d9-7d54-413e-b265-425948d06e92';
+const CLIENT_ID = 'ZH2TdMeZEWVO8CXJKFHBYFeaAwoVIYi0';
+const SERVER_TOKEN = 'De9IpR3cxQJ9pMrmhiIUqo_wmyA0mzQ3lBwapEL1';
 
 class Client {
   xhr: XMLHttpRequest;
@@ -107,11 +109,10 @@ class Poller {
   }
 
   pollUber(position, carsFoundCb: Function) {
-    const token = 'De9IpR3cxQJ9pMrmhiIUqo_wmyA0mzQ3lBwapEL1';
     this.polling = false;
 
-    let {latitude, longitude} = position.coords;
-    let params = `server_token=${token}`;
+    const {latitude, longitude} = position.coords;
+    let params = `server_token=${SERVER_TOKEN}`;
     params += `&start_latitude=${latitude}`;
     params += `&start_longitude=${longitude}`;
     params += `&product_id=${PRODUCT_ID}`;
@@ -127,7 +128,10 @@ class Poller {
         body.times.forEach((t) => {
           cars.append(new Car(t.estimate));
         });
-        carsFoundCb(cars);
+        if (cars.length > 0) {
+          carsFoundCb(position, cars);
+          return;
+        }
         // setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
       })
       .catch((err) => {
@@ -181,10 +185,19 @@ class PollButton extends Component {
     this.poller.cancel();
   }
 
-  notifyCarsFound(carsFound) {
-    /* eslint no-console: 0 */
-    console.log(carsFound);
+  openUberApp(position) {
+    const {latitude, longitude} = position.coords;
+    let params = 'action=setPickup';
+    params += `&client_id=${CLIENT_ID}`;
+    params += `&pickup[latitude]=${latitude}`;
+    params += `&pickup[longitude]=${longitude}`;
+    params += `&product_id=${PRODUCT_ID}`;
+    const url = `uber://?${params}`;
+  }
+
+  notifyCarsFound(position, carsFound) {
     this.setState({buttonState: 'idle'});
+    this.openUberApp(position);
   }
 
   poll() {
