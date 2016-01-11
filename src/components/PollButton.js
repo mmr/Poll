@@ -17,7 +17,7 @@ const styles = React.StyleSheet.create({
   },
 });
 
-// const POLL_TIME_IN_MILLIS = 10000;
+const POLL_TIME_IN_MILLIS = 10000;
 const GPS_TIMEOUT_IN_MILLIS = 20000;
 const GPS_MAX_AGE_IN_MILLIS = 60000;
 
@@ -132,7 +132,7 @@ class Poller {
           carsFoundCb(position, cars);
           return;
         }
-        // setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
+        setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
       })
       .catch((err) => {
         this.handleError(err);
