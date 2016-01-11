@@ -2,6 +2,11 @@
 import React, {Component} from 'react-native';
 import AwesomeButton from 'react-native-awesome-button';
 
+const {
+  AlertIOS,
+  LinkingIOS,
+} = React;
+
 /* eslint-env browser */
 /* eslint react/no-set-state: 0 */
 
@@ -74,14 +79,6 @@ class Client {
   }
 }
 
-class Car {
-  estimate: Number;
-
-  constructor(estimate: Number) {
-    this.estimate = estimate;
-  }
-}
-
 class Poller {
   client: Client;
   polling: boolean;
@@ -94,8 +91,7 @@ class Poller {
   }
 
   handleError(err) {
-    /* eslint no-console: 0 */
-    console.log(err.message);
+    AlertIOS.alert(err.message);
     this.cancel();
   }
 
@@ -117,19 +113,13 @@ class Poller {
     params += `&start_longitude=${longitude}`;
     params += `&product_id=${PRODUCT_ID}`;
     let etaUrl = `https://api.uber.com/v1/estimates/time?${params}`;
-    console.log(`polling: ${etaUrl}`);
 
     fetch(etaUrl)
       .then((resp) => this.handleResp(resp))
       .then((body) => {
-        // XXX (mmr) : why cant we use for..of here?
-        // let cars = [for (t of body.times) new Car(t.etimate)];
-        let cars = [];
-        body.times.forEach((t) => {
-          cars.append(new Car(t.estimate));
-        });
-        if (cars.length > 0) {
-          carsFoundCb(position, cars);
+        let carsFound = body.times.length > 0;
+        if (carsFound) {
+          carsFoundCb(position);
           return;
         }
         setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
@@ -193,16 +183,23 @@ class PollButton extends Component {
     params += `&pickup[longitude]=${longitude}`;
     params += `&product_id=${PRODUCT_ID}`;
     const url = `uber://?${params}`;
+    LinkingIOS.canOpenURL(url, (supported) => {
+      if (supported) {
+        LinkingIOS.openURL(url);
+      } else {
+        AlertIOS.alert(`Can't handle url: ${url}`);
+      }
+    });
   }
 
-  notifyCarsFound(position, carsFound) {
+  notifyCarsFound(position) {
     this.setState({buttonState: 'idle'});
     this.openUberApp(position);
   }
 
   poll() {
     this.setState({buttonState: 'polling'});
-    this.poller.poll((carsFound) => this.notifyCarsFound(carsFound));
+    this.poller.poll((position) => this.notifyCarsFound(position));
   }
 
   render() {
