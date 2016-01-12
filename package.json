@@ -15,7 +15,8 @@
     "android-setup-port": "adb reverse tcp:8081 tcp:8080",
     "bundle": "rnws bundle",
     "test": "eslint src",
-    "start": "rnws start"
+    "start": "rnws start",
+    "package": "react-native bundle --minify --platform ios --entry-file src/main.ios.js --bundle-output ios/main.jsbundle"
   },
   "repository": {
     "type": "git",
