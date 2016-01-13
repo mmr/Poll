@@ -1,4 +1,6 @@
 /* @flow */
+/* eslint-env browser */
+
 import React, {Component} from 'react-native';
 import AwesomeButton from 'react-native-awesome-button';
 
@@ -6,9 +8,6 @@ const {
   AlertIOS,
   LinkingIOS,
 } = React;
-
-/* eslint-env browser */
-/* eslint react/no-set-state: 0 */
 
 const styles = React.StyleSheet.create({
   button: {
@@ -162,13 +161,6 @@ class PollButton extends Component {
       buttonState: 'idle',
     };
   }
-
-/*
-// XXX (mmr) : is this really needed?
-  componentWillUnmount() {
-    this.poller.cancel();
-  }
-*/
 
   cancel() {
     this.setState({buttonState: 'idle'});
