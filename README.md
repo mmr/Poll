@@ -1,6 +1,5 @@
-[![Build Status](https://api.travis-ci.org/mmr/Poll.svg?branch=master)](https://travis-ci.org/mmr/Poll/)
 
-# Poll
+# Poll [![Build Status](https://api.travis-ci.org/mmr/Poll.svg?branch=master)](https://travis-ci.org/mmr/Poll/)
 
 - No cars available?
 - Want to get notified when there are?
