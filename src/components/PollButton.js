@@ -106,7 +106,6 @@ class Poller {
   pollUber(position, carsFoundCb: Function) {
     this.polling = false;
 
-    AlertIOS.alert(`[1] Position: ${position} / ${position.coords}`);
     const {latitude, longitude} = position.coords;
     let params = `server_token=${SERVER_TOKEN}`;
     params += `&start_latitude=${latitude}`;
@@ -169,7 +168,6 @@ class PollButton extends Component {
   }
 
   openUberApp(position) {
-    AlertIOS.alert(`[2] Position: ${position} / ${position.coords}`);
     const {latitude, longitude} = position.coords;
     let params = 'action=setPickup';
     params += `&client_id=${CLIENT_ID}`;
