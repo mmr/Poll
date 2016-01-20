@@ -105,23 +105,24 @@ class Poller {
 
   pollUber(position, carsFoundCb: Function) {
     this.polling = false;
-
     const {latitude, longitude} = position.coords;
     let params = `server_token=${SERVER_TOKEN}`;
     params += `&start_latitude=${latitude}`;
     params += `&start_longitude=${longitude}`;
     params += `&product_id=${PRODUCT_ID}`;
     let etaUrl = `https://api.uber.com/v1/estimates/time?${params}`;
-
     fetch(etaUrl)
       .then((resp) => this.handleResp(resp))
       .then((body) => {
-        let carsFound = body.times.length > 0;
-        if (carsFound) {
-          carsFoundCb(position);
+        let carsFound = body.times.length;
+        if (carsFound > 0) {
+          carsFoundCb(position, carsFound);
           return;
         }
-        setTimeout(this.pollUber, POLL_TIME_IN_MILLIS);
+        setTimeout(
+          () => this.pollUber(position, carsFoundCb),
+          POLL_TIME_IN_MILLIS
+        );
       })
       .catch((err) => {
         this.handleError(err);
@@ -170,9 +171,9 @@ class PollButton extends Component {
   openUberApp(position) {
     const {latitude, longitude} = position.coords;
     let params = 'action=setPickup';
-    params += `&client_id=${CLIENT_ID}`;
     params += `&pickup[latitude]=${latitude}`;
     params += `&pickup[longitude]=${longitude}`;
+    params += `&client_id=${CLIENT_ID}`;
     params += `&product_id=${PRODUCT_ID}`;
     const url = `uber://?${params}`;
     LinkingIOS.canOpenURL(url, (supported) => {
@@ -184,14 +185,16 @@ class PollButton extends Component {
     });
   }
 
-  notifyCarsFound(position) {
+  notifyCarsFound(position, carsFound) {
+    AlertIOS.alert(`Found ${carsFound} cars!\nOpening Uber now...`);
     this.setState({buttonState: 'idle'});
     this.openUberApp(position);
   }
 
   poll() {
     this.setState({buttonState: 'polling'});
-    this.poller.poll((position) => this.notifyCarsFound(position));
+    this.poller.poll(
+      (position, carsFound) => this.notifyCarsFound(position, carsFound));
   }
 
   render() {
