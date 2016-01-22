@@ -57371,11 +57371,10 @@ __d('Poll/src/components/PollButton.js',function(global, require, module, export
 
 
 
+
+
 AlertIOS=_reactNative2.default.AlertIOS;var 
 LinkingIOS=_reactNative2.default.LinkingIOS;
-
-
-
 
 
 var styles=_reactNative2.default.StyleSheet.create({
@@ -57474,23 +57473,24 @@ throw err;}},{key:'pollUber',value:function pollUber(
 
 position,carsFoundCb){var _this2=this;
 this.polling=false;var _position$coords=
-
 position.coords;var latitude=_position$coords.latitude;var longitude=_position$coords.longitude;
 var params='server_token='+SERVER_TOKEN;
 params+='&start_latitude='+latitude;
 params+='&start_longitude='+longitude;
 params+='&product_id='+PRODUCT_ID;
 var etaUrl='https://api.uber.com/v1/estimates/time?'+params;
-
 fetch(etaUrl).
 then(function(resp){return _this2.handleResp(resp);}).
 then(function(body){
-var carsFound=body.times.length>0;
-if(carsFound){
-carsFoundCb(position);
+var carsFound=body.times.length;
+if(carsFound>0){
+carsFoundCb(position,carsFound);
 return;}
 
-setTimeout(_this2.pollUber,POLL_TIME_IN_MILLIS);}).
+setTimeout(
+function(){return _this2.pollUber(position,carsFoundCb);},
+POLL_TIME_IN_MILLIS);}).
+
 
 catch(function(err){
 _this2.handleError(err);});}},{key:'poll',value:function poll(
@@ -57531,13 +57531,6 @@ buttonState:'idle'};return _this4;}babelHelpers.createClass(PollButton,[{key:'ca
 
 
 
-
-
-
-
-
-
-
 {
 this.setState({buttonState:'idle'});
 this.poller.cancel();}},{key:'openUberApp',value:function openUberApp(
@@ -57546,9 +57539,9 @@ this.poller.cancel();}},{key:'openUberApp',value:function openUberApp(
 position){var _position$coords2=
 position.coords;var latitude=_position$coords2.latitude;var longitude=_position$coords2.longitude;
 var params='action=setPickup';
-params+='&client_id='+CLIENT_ID;
 params+='&pickup[latitude]='+latitude;
 params+='&pickup[longitude]='+longitude;
+params+='&client_id='+CLIENT_ID;
 params+='&product_id='+PRODUCT_ID;
 var url='uber://?'+params;
 LinkingIOS.canOpenURL(url,function(supported){
@@ -57560,14 +57553,16 @@ AlertIOS.alert('Can\'t handle url: '+url);}});}},{key:'notifyCarsFound',value:fu
 
 
 
-position){
+position,carsFound){
+AlertIOS.alert('Found '+carsFound+' cars!\nOpening Uber now...');
 this.setState({buttonState:'idle'});
 this.openUberApp(position);}},{key:'poll',value:function poll()
 
 
 {var _this5=this;
 this.setState({buttonState:'polling'});
-this.poller.poll(function(position){return _this5.notifyCarsFound(position);});}},{key:'render',value:function render()
+this.poller.poll(
+function(position,carsFound){return _this5.notifyCarsFound(position,carsFound);});}},{key:'render',value:function render()
 
 
 {
@@ -57741,4 +57736,4 @@ module.exports=AwesomeButton;
 });
 ;require("InitializeJavaScriptAppEngine");
 ;require("Poll/src/main.ios.js");
-__SSTOKENSTRING = "@generated SignedSource<<5bd55bb6253c07ba338f96f291f66e2c>>";
+__SSTOKENSTRING = "@generated SignedSource<<6a50285fd90de65675706e65f2aa32ee>>";
