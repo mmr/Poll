@@ -12,7 +12,9 @@ available at your location. Poll will notify you when a car gets into range.
 ## How to install
 
 ### iOS
-(...)
+```bash
+react-native bundle --minify --platform ios --entry-file src/main.ios.js --bundle-output ios/main.jsbundle
+```
 
 ### Android
 (...)
